@@ -13,6 +13,9 @@ public sealed record SignUpDto
     [Required]
     public string Password { get; init; } = string.Empty;
 
+    public string Firstname { get; set; } = string.Empty;
+    public string Lastname { get; set; } = string.Empty;
+
     public string Role { get; init; } = string.Empty;
 
     public Dictionary<string, IEnumerable<string>> Claims { get; init; } = [];
