@@ -14,27 +14,27 @@ public class AuthorizeCheckOperationFilter : IOperationFilter
         var hasAuthorize = context.MethodInfo.DeclaringType.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any()
                            || context.MethodInfo.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any();
 
-        if (hasAuthorize)
+        if (!hasAuthorize)
+            return;
+
+        operation.Responses.Add("401", new OpenApiResponse { Description = "Unauthorized" });
+        // operation.Responses.Add("403", new OpenApiResponse { Description = "Forbidden" });
+
+        var jwtBearerScheme = new OpenApiSecurityScheme
         {
-            operation.Responses.Add("401", new OpenApiResponse { Description = "Unauthorized" });
-            // operation.Responses.Add("403", new OpenApiResponse { Description = "Forbidden" });
-
-            var jwtBearerScheme = new OpenApiSecurityScheme
+            Reference = new OpenApiReference
             {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            };
+                Type = ReferenceType.SecurityScheme,
+                Id = "Bearer"
+            }
+        };
 
-            operation.Security = new List<OpenApiSecurityRequirement>
+        operation.Security = new List<OpenApiSecurityRequirement>
+        {
+            new()
             {
-                new()
-                {
-                    [jwtBearerScheme] = Array.Empty<string>()
-                }
-            };
-        }
+                [jwtBearerScheme] = Array.Empty<string>()
+            }
+        };
     }
 }
