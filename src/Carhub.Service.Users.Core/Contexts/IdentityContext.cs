@@ -7,10 +7,9 @@ internal sealed class IdentityContext : IIdentityContext
     public IdentityContext(ClaimsPrincipal principal)
     {
         IsAuthenticated = principal.Identity?.IsAuthenticated is true;
-        // Id = IsAuthenticated ? Guid.Parse(principal?.Identity?.Name ?? Guid.Empty.ToString()) : Guid.Empty;
         if (IsAuthenticated)
         {
-            var success = Guid.TryParse(principal?.Identity?.Name, out var id);
+            var success = Guid.TryParse(principal.Identity?.Name, out var id);
             Id = success ? id : Guid.Empty;
         }
 

@@ -1,6 +1,6 @@
 ﻿namespace Carhub.Service.Users.Core.Contexts;
 
-public interface IContextFactory
+internal interface IContextFactory
 {
     IContext Create();
 }

@@ -7,7 +7,7 @@ public sealed record SignUpDto
     public Guid Id { get; init; }
 
     [EmailAddress] [Required] public string Email { get; init; } = string.Empty;
-
+//TODO: add maximum length
     [Required] public string Password { get; init; } = string.Empty;
 
     [Required] public string Firstname { get; set; } = string.Empty;
