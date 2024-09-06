@@ -1,10 +1,14 @@
 ﻿using System.Text;
+using Carhub.Service.Users.Core.Contexts;
 using Carhub.Service.Users.Core.DAL;
 using Carhub.Service.Users.Core.DAL.Repositories;
+using Carhub.Service.Users.Core.ErrorHandling;
 using Carhub.Service.Users.Core.Options;
 using Carhub.Service.Users.Core.Repositories;
 using Carhub.Service.Users.Core.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,23 +18,40 @@ namespace Carhub.Service.Users.Core;
 
 public static class Extensions
 {
-    public static IServiceCollection AddCore(this IServiceCollection services)
+    public static IServiceCollection AddCore(this IServiceCollection services, IConfiguration configuration)
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         return services
+            .Configure<AuthOptions>(configuration.GetSection(AuthOptions.OptionsName))
             .AddPostgres<UsersDbContext>()
             .AddTransient<IIdentityService, IdentityService>()
-            .AddSingleton<IPasswordHasher, PasswordHasher>()
+            .AddSingleton<IPasswordManager, PasswordManager>()
             .AddSingleton<ITokenManager, TokenManager>()
             .AddScoped<IUserRepository, UserRepository>()
-            .AddSingleton(TimeProvider.System);
+            .AddSingleton(TimeProvider.System)
+            .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
+            .AddTransient<IContextFactory, ContextFactory>()
+            .AddTransient<IContext>(sp => sp.GetRequiredService<IContextFactory>().Create())
+            .AddAuth()
+            .AddErrorHandling();
     }
 
-    public static IServiceCollection AddAuth(this IServiceCollection services)
+    public static WebApplication UseCore(this WebApplication app)
+    {
+        app.UseErrorHandling();
+
+        app.UseAuthentication();
+
+        app.UseAuthorization();
+
+        return app;
+    }
+
+    private static IServiceCollection AddAuth(this IServiceCollection services)
     {
         var options = services.GetOptions<AuthOptions>(AuthOptions.OptionsName);
 
-        var tokenValidationParameters = new TokenValidationParameters()
+        var tokenValidationParameters = new TokenValidationParameters
         {
             RequireAudience = options.RequireAudience,
             ValidIssuer = options.ValidIssuer,
@@ -88,10 +109,8 @@ public static class Extensions
         services.AddSingleton(tokenValidationParameters);
 
         foreach (var policy in options.Policies)
-        {
             services.AddAuthorizationBuilder()
                 .AddPolicy(policy, y => y.RequireClaim("permissions", policy));
-        }
 
         return services;
     }
@@ -99,7 +118,7 @@ public static class Extensions
     private static IServiceCollection AddPostgres<T>(this IServiceCollection services)
         where T : DbContext
     {
-        var options = services.GetOptions<PostgresOptions>("postgres");
+        var options = services.GetOptions<PostgresOptions>(PostgresOptions.OptionsName);
         services.AddDbContext<T>(x => x.UseNpgsql(options.ConnectionString));
         return services;
     }

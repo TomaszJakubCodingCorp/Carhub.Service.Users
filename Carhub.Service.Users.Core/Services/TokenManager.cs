@@ -10,12 +10,12 @@ using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegiste
 
 namespace Carhub.Service.Users.Core.Services;
 
-internal sealed class TokenManager: ITokenManager
+internal sealed class TokenManager : ITokenManager
 {
-    private readonly Dictionary<string, IEnumerable<string>> _emptyClaims = new();
-    private readonly TimeProvider _timeProvider;
-    private readonly SigningCredentials _signingCredentials;
     private readonly AuthOptions _authOptions;
+    private readonly Dictionary<string, IEnumerable<string>> _emptyClaims = new();
+    private readonly SigningCredentials _signingCredentials;
+    private readonly TimeProvider _timeProvider;
 
     public TokenManager(IOptions<AuthOptions> authOptions,
         TimeProvider timeProvider)
@@ -26,7 +26,7 @@ internal sealed class TokenManager: ITokenManager
         _timeProvider = timeProvider;
         _signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authOptions.Value.IssuerSigningKey)),
-            SecurityAlgorithms.Sha512);
+            SecurityAlgorithms.HmacSha512);
         _authOptions = authOptions.Value;
     }
 
@@ -54,17 +54,14 @@ internal sealed class TokenManager: ITokenManager
         if (claims?.Any() is true)
         {
             var customClaims = new List<Claim>();
-            foreach (var (key, values) in claims)
-            {
-                customClaims.AddRange(values.Select(value => new Claim(key, value)));
-            }
+            foreach (var (key, values) in claims) customClaims.AddRange(values.Select(value => new Claim(key, value)));
             jwtClaims.AddRange(customClaims);
         }
 
         var expires = now.Add(_authOptions.Expiry);
 
         var jwt = new JwtSecurityToken(
-            issuer: _authOptions.Issuer,
+            _authOptions.Issuer,
             claims: jwtClaims,
             notBefore: now,
             expires: expires,

@@ -30,5 +30,5 @@ public sealed class AuthOptions
     public bool RequireHttpsMetadata { get; set; } = true;
     public bool IncludeErrorDetails { get; set; } = true;
     public string Challenge { get; set; } = "Bearer";
-    public List<string> Policies { get; set; }
+    public List<string> Policies { get; set; } = [];
 }

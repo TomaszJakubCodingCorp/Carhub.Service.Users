@@ -1,5 +1,4 @@
-﻿using System.Security.Authentication;
-using Carhub.Service.Users.Core.DTOs;
+﻿using Carhub.Service.Users.Core.DTOs;
 using Carhub.Service.Users.Core.Entities;
 using Carhub.Service.Users.Core.Exceptions;
 using Carhub.Service.Users.Core.Repositories;
@@ -8,7 +7,7 @@ namespace Carhub.Service.Users.Core.Services;
 
 internal sealed class IdentityService(
     IUserRepository userRepository,
-    IPasswordHasher passwordHasher,
+    IPasswordManager passwordManager,
     ITokenManager tokenManager,
     TimeProvider timeProvider)
     : IIdentityService
@@ -30,9 +29,10 @@ internal sealed class IdentityService(
         if (user is not null)
             throw new EmailInUseException(email);
 
-        passwordHasher.CreatePasswordHash(signUpDto.Password, out var hash, out var salt);
+        passwordManager.VerifyPasswordRequirements(signUpDto.Password);
+        passwordManager.CreatePasswordHash(signUpDto.Password, out var hash, out var salt);
 
-        user = new User()
+        user = new User
         {
             Id = signUpDto.Id,
             Email = signUpDto.Email,
@@ -53,8 +53,8 @@ internal sealed class IdentityService(
         var user = await userRepository.GetAsync(signInDto.Email.ToLowerInvariant())
                    ?? throw new InvalidCredentialsException();
 
-        if (!passwordHasher.VerifyPassword(signInDto.Password, user.PasswordHash, user.PasswordSalt))
-            throw new InvalidCredentialException();
+        if (!passwordManager.VerifyPassword(signInDto.Password, user.PasswordHash, user.PasswordSalt))
+            throw new InvalidCredentialsException();
 
         if (!user.IsActive)
             throw new UserNotActiveException(user.Id);

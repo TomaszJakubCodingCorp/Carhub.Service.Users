@@ -2,7 +2,7 @@
 
 namespace Carhub.Service.Users.Core.Repositories;
 
-internal interface IUserRepository
+public interface IUserRepository
 {
     Task<User?> GetAsync(Guid id);
     Task<User?> GetAsync(string email);
