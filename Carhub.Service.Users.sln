@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carhub.Service.Users.Api", "Carhub.Service.Users.Api\Carhub.Service.Users.Api.csproj", "{7BF14FED-E27D-4B96-B90D-36B8D4CB4C28}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carhub.Service.Users.Api", "src\Carhub.Service.Users.Api\Carhub.Service.Users.Api.csproj", "{7BF14FED-E27D-4B96-B90D-36B8D4CB4C28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carhub.Service.Users.Core", "Carhub.Service.Users.Core\Carhub.Service.Users.Core.csproj", "{E1F93685-BE94-42A5-B473-AF2F4FE95E21}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carhub.Service.Users.Core", "src\Carhub.Service.Users.Core\Carhub.Service.Users.Core.csproj", "{E1F93685-BE94-42A5-B473-AF2F4FE95E21}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1512A93D-B7B5-4FA0-B5A8-8A5D9801C219}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarHub.Service.Users.Tests.Unit", "Tests\CarHub.Service.Users.Tests.Unit\CarHub.Service.Users.Tests.Unit.csproj", "{E0A0B4F9-589A-4EE9-8BC4-6B6AB528242C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarHub.Users.Tests.Integration", "Tests\CarHub.Users.Tests.Integration\CarHub.Users.Tests.Integration.csproj", "{5A00A942-64C8-4BF1-BFFE-86D3FFAECD7C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FFCC3465-455E-4A59-A2F6-A24E3300998A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,5 +47,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{E0A0B4F9-589A-4EE9-8BC4-6B6AB528242C} = {1512A93D-B7B5-4FA0-B5A8-8A5D9801C219}
 		{5A00A942-64C8-4BF1-BFFE-86D3FFAECD7C} = {1512A93D-B7B5-4FA0-B5A8-8A5D9801C219}
+		{7BF14FED-E27D-4B96-B90D-36B8D4CB4C28} = {FFCC3465-455E-4A59-A2F6-A24E3300998A}
+		{E1F93685-BE94-42A5-B473-AF2F4FE95E21} = {FFCC3465-455E-4A59-A2F6-A24E3300998A}
 	EndGlobalSection
 EndGlobal

@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Carhub.Service.Users.Api\Carhub.Service.Users.Api.csproj" />
+      <ProjectReference Include="..\..\src\Carhub.Service.Users.Api\Carhub.Service.Users.Api.csproj" />
     </ItemGroup>
 
 </Project>
