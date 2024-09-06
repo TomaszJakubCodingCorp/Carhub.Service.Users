@@ -10,6 +10,12 @@ namespace Carhub.Service.Users.Api.Controllers;
 [Route("[controller]")]
 public class AccountController(IIdentityService identityService, IContext context) : ControllerBase
 {
+    [HttpGet("ping")]
+    public ActionResult<string> Ping()
+    {
+        return Ok("Pong");
+    }
+
     [HttpGet("me")]
     [Authorize]
     public async Task<ActionResult<UserDto?>> GetCurrentUserAsync()
