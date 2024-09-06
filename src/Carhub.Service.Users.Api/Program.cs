@@ -5,6 +5,13 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddLogging();
+
+// Add services to the container
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -42,5 +49,8 @@ app.UseCore();
 app.MapControllers();
 
 app.Run();
+
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+logger.LogInformation("Application started");
 
 public partial class Program(){}

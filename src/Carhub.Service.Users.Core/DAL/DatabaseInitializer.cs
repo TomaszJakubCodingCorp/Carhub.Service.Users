@@ -3,13 +3,15 @@ using Carhub.Service.Users.Core.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Carhub.Service.Users.Core.DAL;
 
 internal sealed class DatabaseInitializer(
     IServiceProvider serviceProvider,
     TimeProvider timeProvider,
-    IPasswordManager passwordManager) : IHostedService
+    IPasswordManager passwordManager,
+    ILogger<DatabaseInitializer> logger) : IHostedService
 {
     public Task StartAsync(CancellationToken cancellationToken)
     {
@@ -17,6 +19,8 @@ internal sealed class DatabaseInitializer(
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<UsersDbContext>();
             dbContext.Database.Migrate();
+            logger.LogInformation("Database migrated");
+
             var users = dbContext.Users.ToList();
             if (users.Count is not 0)
                 return Task.CompletedTask;
@@ -41,6 +45,7 @@ internal sealed class DatabaseInitializer(
 
             dbContext.Users.AddRange(users);
             dbContext.SaveChanges();
+            logger.LogInformation("Database initialized");
         }
 
         return Task.CompletedTask;

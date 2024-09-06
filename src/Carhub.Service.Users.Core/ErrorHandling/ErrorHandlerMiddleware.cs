@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Carhub.Service.Users.Core.ErrorHandling;
 
-internal class ErrorHandlerMiddleware(
+internal sealed class ErrorHandlerMiddleware(
     ILogger<ErrorHandlerMiddleware> logger)
     : IMiddleware
 {
@@ -17,12 +17,12 @@ internal class ErrorHandlerMiddleware(
         }
         catch (Exception exception)
         {
-            logger.LogError(exception, exception.Message);
+            logger.LogError(exception, "Exception message: {Message}", exception.Message);
             await HandleErrorAsync(context, exception);
         }
     }
 
-    private async Task HandleErrorAsync(HttpContext context, Exception exception)
+    private static async Task HandleErrorAsync(HttpContext context, Exception exception)
     {
         var errorResponse = Map(exception);
         context.Response.StatusCode = (int)errorResponse!.StatusCode;
@@ -35,9 +35,10 @@ internal class ErrorHandlerMiddleware(
     {
         return exception switch
         {
-            CarHubException ex => new ErrorsResponse(HttpStatusCode.BadRequest, new Error(exception.GetType().Name, ex
-                .Message)),
-            _ => new ErrorsResponse(HttpStatusCode.InternalServerError, new Error("error", "There was an error."))
+            CarHubException ex => new ErrorsResponse(HttpStatusCode.BadRequest,
+                new Error(exception.GetType().Name, ex.Message)),
+            _ => new ErrorsResponse(HttpStatusCode.InternalServerError,
+                new Error("error", "There was an error."))
         };
     }
 

@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 namespace Carhub.Service.Users.Core;
 
@@ -34,6 +35,16 @@ public static class Extensions
             .AddTransient<IContext>(sp => sp.GetRequiredService<IContextFactory>().Create())
             .AddAuth()
             .AddErrorHandling();
+    }
+
+    public static void AddLogging(this WebApplicationBuilder builder)
+    {
+        var logFilePath = $"logs/log_users_{DateTime.UtcNow:yyyy-MM-dd}.txt";
+
+        builder.Host.UseSerilog((ctx, lc) => lc
+            .ReadFrom.Configuration(ctx.Configuration)
+            .WriteTo.Console()
+            .WriteTo.File(logFilePath, rollingInterval: RollingInterval.Infinite));
     }
 
     public static WebApplication UseCore(this WebApplication app)
