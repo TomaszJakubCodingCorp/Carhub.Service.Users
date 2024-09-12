@@ -44,7 +44,7 @@ public static class Extensions
         builder.Host.UseSerilog((ctx, lc) => lc
             .ReadFrom.Configuration(ctx.Configuration)
             .WriteTo.Console()
-            .WriteTo.File(logFilePath, rollingInterval: RollingInterval.Infinite));
+            .WriteTo.File(logFilePath, rollingInterval: RollingInterval.Day));
     }
 
     public static WebApplication UseCore(this WebApplication app)
