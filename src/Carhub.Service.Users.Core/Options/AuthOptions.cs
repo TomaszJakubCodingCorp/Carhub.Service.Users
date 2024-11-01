@@ -5,6 +5,8 @@ public sealed class AuthOptions
     public const string OptionsName = nameof(AuthOptions);
     public string IssuerSigningKey { get; set; }
     public TimeSpan Expiry { get; set; }
+    public TimeSpan RefreshExpiry { get; set; }
+    public TimeSpan ActivationExpiry { get; set; }
     public string Issuer { get; set; } = string.Empty;
     public bool RequireAudience { get; set; } = true;
     public string ValidIssuer { get; set; } = string.Empty;

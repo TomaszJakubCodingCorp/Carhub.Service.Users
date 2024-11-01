@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using StackExchange.Redis;
 
 namespace Carhub.Service.Users.Core;
 
@@ -33,6 +34,8 @@ public static class Extensions
             .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
             .AddTransient<IContextFactory, ContextFactory>()
             .AddTransient<IContext>(sp => sp.GetRequiredService<IContextFactory>().Create())
+            .AddTransient<IRefreshTokenService, RefreshTokenService>()
+            .AddRedis()
             .AddAuth()
             .AddErrorHandling();
     }
@@ -56,6 +59,15 @@ public static class Extensions
         app.UseAuthorization();
 
         return app;
+    }
+
+    private static IServiceCollection AddRedis(this IServiceCollection services)
+    {
+        var options = services.GetOptions<RedisOptions>(RedisOptions.OptionsName);
+
+        services.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(options.ConnectionString));
+
+        return services;
     }
 
     private static IServiceCollection AddAuth(this IServiceCollection services)
@@ -131,6 +143,7 @@ public static class Extensions
     {
         var options = services.GetOptions<PostgresOptions>(PostgresOptions.OptionsName);
         services.AddDbContext<T>(x => x.UseNpgsql(options.ConnectionString));
+        services.AddHostedService<DatabaseInitializer>();
         return services;
     }
 

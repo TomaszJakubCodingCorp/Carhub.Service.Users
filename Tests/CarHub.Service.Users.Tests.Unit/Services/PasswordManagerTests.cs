@@ -59,10 +59,12 @@ public class PasswordManagerTests
     [InlineData("NOLOWERCASE1!", "Password must contain at least one lowercase letter.\n")]
     [InlineData("NoDigit!", "Password must contain at least one digit.\n")]
     [InlineData("NoSpecialChar1", "Password must contain at least one special character.\n")]
-    public void VerifyPasswordRequirements_ShouldThrowExceptionForInvalidPassword(string password, string expectedMessage)
+    public void VerifyPasswordRequirements_ShouldThrowExceptionForInvalidPassword(string password,
+        string expectedMessage)
     {
         // Act & Assert
-        var ex = Should.Throw<PasswordRequirementsException>(() => _passwordManager.VerifyPasswordRequirements(password));
+        var ex = Should.Throw<PasswordRequirementsException>(
+            () => _passwordManager.VerifyPasswordRequirements(password));
         ex.Message.ShouldContain(expectedMessage);
     }
 
@@ -89,7 +91,8 @@ public class PasswordManagerTests
                               "All the requirements must be fulfilled.";
 
         // Act
-        var ex = Should.Throw<PasswordRequirementsException>(() => _passwordManager.VerifyPasswordRequirements(password));
+        var ex = Should.Throw<PasswordRequirementsException>(
+            () => _passwordManager.VerifyPasswordRequirements(password));
 
         // Assert
         ex.Message.ShouldBe(expectedMessage);

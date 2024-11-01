@@ -29,4 +29,14 @@ internal sealed class UserRepository(UsersDbContext context) : IUserRepository
         _users.Update(user);
         await context.SaveChangesAsync();
     }
+
+    public Task<User?> GetByResetPasswordToken(string token)
+    {
+        return _users.SingleOrDefaultAsync(x => x.PasswordResetToken == token);
+    }
+
+    public Task<User?> GetByActivationToken(string token)
+    {
+        return _users.SingleOrDefaultAsync(x => x.ActivationToken == token);
+    }
 }

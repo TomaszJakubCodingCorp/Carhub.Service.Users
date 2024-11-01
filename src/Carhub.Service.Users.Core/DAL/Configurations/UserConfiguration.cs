@@ -23,10 +23,17 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.Lastname).IsRequired().HasMaxLength(200);
         builder.Property(x => x.Role).IsRequired().HasMaxLength(200);
         builder.Property(x => x.IsActive).IsRequired();
+        builder.Property(x => x.ActivationToken).IsRequired(false).HasMaxLength(200);
+        builder.Property(x => x.ActivationTokenExpires).IsRequired(false);
+        builder.Property(x => x.PasswordResetToken).IsRequired(false).HasMaxLength(200);
+        builder.Property(x => x.PasswordTokenExpires).IsRequired(false);
+        builder.Property(x => x.Banned).IsRequired();
         builder.Property(x => x.CreatedAt).IsRequired();
         builder.Property(x => x.Claims).IsRequired()
             .HasConversion(x => JsonSerializer.Serialize(x, serializerOptions),
                 x => JsonSerializer.Deserialize<Dictionary<string, IEnumerable<string>>>(x, serializerOptions)!);
+        builder.HasIndex(x => x.Email).IsUnique();
+        builder.HasIndex(x => x.PasswordResetToken).IsUnique();
 
         builder.Property(x => x.Claims).Metadata.SetValueComparer(
             new ValueComparer<Dictionary<string, IEnumerable<string>>>(

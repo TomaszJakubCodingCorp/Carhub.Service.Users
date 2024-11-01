@@ -10,6 +10,11 @@ public sealed class User
     public string Lastname { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
     public bool IsActive { get; set; }
+    public string? ActivationToken { get; set; }
+    public DateTime? ActivationTokenExpires { get; set; }
+    public string? PasswordResetToken { get; set; }
+    public DateTime? PasswordTokenExpires { get; set; }
+    public bool Banned { get; set; }
     public DateTime CreatedAt { get; set; }
     public Dictionary<string, IEnumerable<string>> Claims { get; set; } = [];
 }
