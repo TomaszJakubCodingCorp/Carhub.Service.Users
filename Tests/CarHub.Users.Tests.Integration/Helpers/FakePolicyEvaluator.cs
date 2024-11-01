@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace CarHub.Users.Tests.Integration.Helpers;
 
-public class FakePolicyEvaluator: IPolicyEvaluator
+public class FakePolicyEvaluator : IPolicyEvaluator
 {
     public static readonly Guid UserId = Guid.NewGuid();
 
@@ -14,8 +14,8 @@ public class FakePolicyEvaluator: IPolicyEvaluator
     {
         var claims = new List<Claim>
         {
-            new (ClaimTypes.NameIdentifier, UserId.ToString()),
-            new (ClaimTypes.Name, UserId.ToString())
+            new(ClaimTypes.NameIdentifier, UserId.ToString()),
+            new(ClaimTypes.Name, UserId.ToString())
         };
 
         var identity = new ClaimsIdentity(claims, "FakeScheme");
@@ -27,7 +27,8 @@ public class FakePolicyEvaluator: IPolicyEvaluator
         return Task.FromResult(result);
     }
 
-    public Task<PolicyAuthorizationResult> AuthorizeAsync(AuthorizationPolicy policy, AuthenticateResult authenticationResult, HttpContext context, object? resource)
+    public Task<PolicyAuthorizationResult> AuthorizeAsync(AuthorizationPolicy policy,
+        AuthenticateResult authenticationResult, HttpContext context, object? resource)
     {
         return Task.FromResult(PolicyAuthorizationResult.Success());
     }

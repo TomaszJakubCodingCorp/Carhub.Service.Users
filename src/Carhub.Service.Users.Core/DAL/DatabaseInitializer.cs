@@ -25,14 +25,13 @@ internal sealed class DatabaseInitializer(
             if (users.Count is not 0)
                 return Task.CompletedTask;
 
-            passwordManager.CreatePasswordHash("SuperSecretAdminPassword123!", out var hash, out var salt);
-
-            var user = new User
+            passwordManager.CreatePasswordHash("SuperSecretAdminPassword123!", out var adminHash, out var adminSalt);
+            var admin = new User
             {
                 Id = Guid.NewGuid(),
                 Email = "carhub.app2024@gmail.com",
-                PasswordHash = hash,
-                PasswordSalt = salt,
+                PasswordHash = adminHash,
+                PasswordSalt = adminSalt,
                 Firstname = "CarHub",
                 Lastname = "Admin",
                 Role = "Admin",
@@ -41,7 +40,22 @@ internal sealed class DatabaseInitializer(
                 Claims = []
             };
 
-            users = [user];
+            passwordManager.CreatePasswordHash("WeakPassword99#", out var userHash, out var userSalt);
+            var user = new User
+            {
+                Id = Guid.NewGuid(),
+                Email = "some.user@test.com",
+                PasswordHash = userHash,
+                PasswordSalt = userSalt,
+                Firstname = "Ryan",
+                Lastname = "Reynolds",
+                Role = "User",
+                IsActive = true,
+                CreatedAt = timeProvider.GetLocalNow().DateTime,
+                Claims = []
+            };
+
+            users = [admin, user];
 
             dbContext.Users.AddRange(users);
             dbContext.SaveChanges();

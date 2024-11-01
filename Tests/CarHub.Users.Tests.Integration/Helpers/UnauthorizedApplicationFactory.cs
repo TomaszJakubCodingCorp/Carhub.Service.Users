@@ -16,10 +16,7 @@ public sealed class UnauthorizedApplicationFactory<TStartup> : WebApplicationFac
             if (descriptor != null)
                 services.Remove(descriptor);
 
-            services.AddDbContext<UsersDbContext>(options =>
-            {
-                options.UseInMemoryDatabase("UnauthDbInMemory");
-            });
+            services.AddDbContext<UsersDbContext>(options => { options.UseInMemoryDatabase("UnauthDbInMemory"); });
 
             var sp = services.BuildServiceProvider();
             using var scope = sp.CreateScope();

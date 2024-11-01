@@ -15,6 +15,14 @@ services:
     networks:
       - users-network
 
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - 6379:6379
+    networks:
+      - users-network
+
   users-api:
     build:
       context: .
@@ -25,6 +33,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
     depends_on:
       - postgres
+      - redis
     networks:
       - users-network
     

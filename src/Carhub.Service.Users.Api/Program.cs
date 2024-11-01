@@ -38,8 +38,8 @@ var app = builder.Build();
 
 // if (app.Environment.IsDevelopment())
 // {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 // }
 
 app.UseHttpsRedirection();
@@ -50,7 +50,11 @@ app.MapControllers();
 
 app.Run();
 
-var logger = app.Services.GetRequiredService<ILogger<Program>>();
-logger.LogInformation("Application started");
+#if !DEBUG
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Application started");
+#endif
 
-public partial class Program(){}
+public partial class Program
+{
+}

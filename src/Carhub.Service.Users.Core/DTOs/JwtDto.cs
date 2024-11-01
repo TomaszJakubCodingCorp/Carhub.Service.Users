@@ -1,9 +1,11 @@
 ﻿namespace Carhub.Service.Users.Core.DTOs;
 
-public sealed record JwtDto(
-    string AccessToken,
-    long Expires,
-    string Id,
-    string Role,
-    string Email,
-    IDictionary<string, IEnumerable<string>> Claims);
+public sealed class JwtDto
+{
+    public Token AccessToken { get; set; }
+    public Token RefreshToken { get; set; }
+    public string Id { get; set; }
+    public string Role { get; set; }
+    public string Email { get; set; }
+    public IDictionary<string, IEnumerable<string>> Claims { get; set; }
+}

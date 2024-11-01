@@ -28,17 +28,13 @@ public class AuthorizedApplicationFactory<TStartup> : WebApplicationFactory<TSta
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-
         builder.ConfigureServices(services =>
         {
             var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<UsersDbContext>));
             if (descriptor != null)
                 services.Remove(descriptor);
 
-            services.AddDbContext<UsersDbContext>(options =>
-            {
-                options.UseInMemoryDatabase("AuthDbInMemory");
-            });
+            services.AddDbContext<UsersDbContext>(options => { options.UseInMemoryDatabase("AuthDbInMemory"); });
 
             var sp = services.BuildServiceProvider();
             using var scope = sp.CreateScope();
